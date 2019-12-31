@@ -11,4 +11,12 @@
 8. url-loader file-loader 
 9. babel-loader @babel/preset-env @babel/core  // 转换es6/7/8语法但是对新api并不会转换 例如(promise、Generator、Set、Maps、Proxy等)
 10. @babel/polyfill  // 未完成
-11. 
+11. vue vue-loader vue-template-compiler vue-style-loader
+12. webpack-dev-server
+13.  webpack-merge copy-webpack-plugin optimize-css-assets-webpack-plugin uglifyjs-webpack-plugin  
+  webpack-merge 合并配置
+  copy-webpack-plugin 拷贝静态资源
+  optimize-css-assets-webpack-plugin 压缩css
+  uglifyjs-webpack-plugin 压缩js
+  
+14. 

@@ -1,8 +1,6 @@
-import './assets/index.css'
-import './assets/header.less'
-import './assets/index.less'
+import Vue from  'vue'
+import App from './app'
 
-let a = 'aa'
-console.log(a)
-
-console.log('call me 老main')
+new Vue({
+  render: h => h(App)
+}).$mount('#app')

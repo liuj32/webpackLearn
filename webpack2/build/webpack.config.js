@@ -5,12 +5,13 @@ const MiniCssExtractPlugin  = require('mini-css-extract-plugin')
 const ExtractTextWebpackPlugin = require('extract-text-webpack-plugin')
 let indexLess = new ExtractTextWebpackPlugin('index.less');
 let indexCss = new ExtractTextWebpackPlugin('index.css');
+const Webpack = require('webpack')
+const vueLoaderPlugin = require('vue-loader/lib/plugin')
 
 module.exports = {
   mode: 'development',
   entry: {
     main: path.resolve(__dirname, '../src/main.js'),
-    header: path.resolve(__dirname, '../src/header.js')
   },
   output: {
     filename: '[name].[hash:8].js',
@@ -21,20 +22,24 @@ module.exports = {
       {
         test: /\.css$/,
         use: [
-           MiniCssExtractPlugin.loader,
-          /*'style-loader',*/ 
+          'vue-style-loader',
+          /*'style-loader',MiniCssExtractPlugin.loader, */ 
            'css-loader']  //从右向左解析
       },
       {
         test: /\.less$/,
         use:  [
-            MiniCssExtractPlugin.loader,/* 'style-loader'*/
+            'vue-style-loader', /*MiniCssExtractPlugin.loader, 'style-loader'*/
             'css-loader', {
             loader: 'postcss-loader',
             options: {
               plugins: [require('autoprefixer')]
             }
           }, 'less-loader']
+      },
+      {
+        test: /\.vue$/,
+        use: ['vue-loader']
       },
       {
         test: /\.js$/,
@@ -100,9 +105,19 @@ module.exports = {
 
     ]
   },
+  resolve:{
+    alias:{
+      'vue$':'vue/dist/vue.runtime.esm.js',
+      ' @':path.resolve(__dirname,'../src')
+    },
+    extensions:['*','.js','.json','.vue']
+  },  
+  devServer:{
+    port:3000,
+    hot:true,
+    contentBase:'../dist'
+  },  
   plugins: [
-    // indexLess,
-    // indexCss,
     new CleanWebpackPlugin(),
     new MiniCssExtractPlugin({
       filename: '[name].[hash].css',
@@ -113,10 +128,7 @@ module.exports = {
       filename: 'index.html',
       chunks: ['main']
     }),
-    new HtmlWebpackPlugin({
-      template: path.resolve(__dirname, '../public/header.html'),
-      filename: 'header.html',
-      chunks: ['header']
-    })
+    new vueLoaderPlugin(),
+    new Webpack.HotModuleReplacementPlugin()
   ]
 }

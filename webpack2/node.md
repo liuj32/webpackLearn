@@ -21,4 +21,7 @@
   
 14. happypack
 15. webpack-parallel-uglify-plugin
-16. 
+16. cache-loader
+17. webpack-bundle-analyzer
+18. cross-env
+19. 

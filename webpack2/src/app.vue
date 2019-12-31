@@ -12,7 +12,10 @@ export default {
     return {
       initData: 'Vue 开发环境初始化'
     }
-  }
+  },
+  mounted() {
+    console.log($("h1").html())
+  },
 }
 </script>
 

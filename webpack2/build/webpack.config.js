@@ -155,6 +155,9 @@ module.exports = {
     },
     extensions:['*','.js','.json','.vue']
   },
+  externals: {
+    jquery: 'jQuery'
+  },
   plugins: [
     new BundleAnalyzerPlugin({
       analyzerHost: '127.0.0.1',
@@ -176,7 +179,7 @@ module.exports = {
           loader: 'babel-loader',
           options: {
             presets: [
-              ['@babel/preset-env']
+              ['@babel/preset-env', { modules: false }]
             ],
             cacheDirectory: true
           }

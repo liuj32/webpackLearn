@@ -19,4 +19,6 @@
   optimize-css-assets-webpack-plugin 压缩css
   uglifyjs-webpack-plugin 压缩js
   
-14. 
+14. happypack
+15. webpack-parallel-uglify-plugin
+16. 

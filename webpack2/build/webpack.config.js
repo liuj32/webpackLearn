@@ -7,29 +7,63 @@ let indexLess = new ExtractTextWebpackPlugin('index.less');
 let indexCss = new ExtractTextWebpackPlugin('index.css');
 const Webpack = require('webpack')
 const vueLoaderPlugin = require('vue-loader/lib/plugin')
+const devMode = process.argv.indexOf('--mode=production') === -1
+
+const HappyPack = require('happypack')
+const os = require('os')
+const happyThreadPool = HappyPack.ThreadPool({ size: os.cpus().length })
+
+const CopyWebpackPlugin = require('copy-webpack-plugin')
+
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 
 module.exports = {
-  mode: 'development',
   entry: {
     main: path.resolve(__dirname, '../src/main.js'),
   },
   output: {
-    filename: '[name].[hash:8].js',
-    path: path.resolve(__dirname, '../dist')
+    filename: 'js/[name].[hash:8].js',
+    path: path.resolve(__dirname, '../dist'),
+    chunkFilename: 'js/[name].[hash:8].js'
   },
   module: {
+    noParse: /jquery/, //不去解析jquery中的依赖库
     rules: [
+      {
+        test: /\.ext$/,
+        use: [
+          'cache-loader',
+          // ...loaders
+        ],
+        include: path.resolve(__dirname, 'src')
+      },
       {
         test: /\.css$/,
         use: [
-          'vue-style-loader',
-          /*'style-loader',MiniCssExtractPlugin.loader, */ 
-           'css-loader']  //从右向左解析
+          {
+            loader: devMode ? 'vue-style-loader' : MiniCssExtractPlugin.loader,
+            options: {
+              publicPath: '../dist/css',
+              hmr: devMode
+            }
+          },
+           'css-loader', {
+             loader: 'postcss-loader',
+             options: {
+               plugins: [require('autoprefixer')]
+             }
+           }]  //从右向左解析
       },
       {
         test: /\.less$/,
         use:  [
-            'vue-style-loader', /*MiniCssExtractPlugin.loader, 'style-loader'*/
+            {
+              loader: devMode ? 'vue-style-loader' : MiniCssExtractPlugin.loader,
+              options: {
+                publicPath: "../dist/css",
+                hmr: devMode
+              }
+            },
             'css-loader', {
             loader: 'postcss-loader',
             options: {
@@ -39,16 +73,26 @@ module.exports = {
       },
       {
         test: /\.vue$/,
-        use: ['vue-loader']
+        use: [{
+          loader: 'vue-loader',
+          options: {
+            compilerOptions: {
+              preserveWhitespace: false
+            }
+          }
+        }]
       },
       {
         test: /\.js$/,
-        use: {
-          loader: 'babel-loader',
-          options: {
-            presets:['@babel/preset-env']
-          },
-        },
+        // use: {
+        //     loader: 'babel-loader',
+        //     options: {
+        //       presets: ['@babel/preset-env']
+        //     }
+        //   },
+        use: [{
+          loader: 'happypack/loader?id=happyBabel'
+        }],
         exclude:/node_modules/
       },
       {
@@ -107,27 +151,48 @@ module.exports = {
   resolve:{
     alias:{
       'vue$':'vue/dist/vue.runtime.esm.js',
-      ' @':path.resolve(__dirname,'../src')
+      '@':path.resolve(__dirname,'../src')
     },
     extensions:['*','.js','.json','.vue']
-  },  
-  devServer:{
-    port:3000,
-    hot:true,
-    contentBase:'../dist'
-  },  
+  },
   plugins: [
-    new CleanWebpackPlugin(),
-    new MiniCssExtractPlugin({
-      filename: '[name].[hash].css',
-      chunkFilename: "[id].css"
+    new BundleAnalyzerPlugin({
+      analyzerHost: '127.0.0.1',
+      analyzerPort: 8889
     }),
+    new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, '../public/index.html'),
-      filename: 'index.html',
-      chunks: ['main']
     }),
     new vueLoaderPlugin(),
-    new Webpack.HotModuleReplacementPlugin()
+    new MiniCssExtractPlugin({
+      filename: devMode ? '[name].css' : '[name].[hash].css',
+      chunkFilename: devMode ? "[id].css" : '[id].[hash].css'
+    }),    
+    new HappyPack({
+      id: 'happyBabel',
+      loaders: [
+        {
+          loader: 'babel-loader',
+          options: {
+            presets: [
+              ['@babel/preset-env']
+            ],
+            cacheDirectory: true
+          }
+        }
+      ],
+      threadPool: happyThreadPool
+    }),
+    new Webpack.DllReferencePlugin({
+      context: __dirname,
+      manifest: require('./vendor-manifest.json')
+    }),
+    new CopyWebpackPlugin([ // 拷贝生成的文件到dist目录 这样每次不必手动去cv
+      {
+        from: path.resolve(__dirname, './static'),
+        to: path.resolve(__dirname, '../dist/static') 
+      }
+    ])
   ]
 }

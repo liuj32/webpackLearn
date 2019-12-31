@@ -102,7 +102,6 @@ module.exports = {
           }
         ]
       }, 
-
     ]
   },
   resolve:{

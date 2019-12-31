@@ -4,7 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+<<<<<<< HEAD
     "dev": "webpack-dev-server --config build/webpack.config.js --open",
+=======
+    "dev": "webpack-dev-server --config build/webpack.config.js",
+>>>>>>> 9b0e4d23830498323c0ce2133f6ed8abbea5ae59
     "build": "webpack --config build/webpack.config.js"
   },
   "keywords": [],

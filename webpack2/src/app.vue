@@ -14,6 +14,7 @@ export default {
     }
   },
   mounted() {
+    console.log('测试是否消除console, 在production模式下')
     console.log($("h1").html())
   },
 }

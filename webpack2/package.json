@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "webpack-dev-server --config  build/webpack.config.js --open",
-    "build": "webpack --mode=production --config build/webpack.config.js",
+    "dev": "webpack-dev-server --config  build/webpack.dev.js --open",
+    "build": "webpack --mode=production --config build/webpack.prod.js",
     "dll": "webpack --config build/webpack.dll.config.js",
     "analyz": "cross-env NODE_ENV=production npm_config_report=true npm run build"
   },
@@ -24,8 +24,12 @@
   },
   "dependencies": {
     "@babel/core": "^7.7.7",
+    "@babel/generator": "^7.7.7",
+    "@babel/parser": "^7.7.7",
     "@babel/polyfill": "^7.7.0",
     "@babel/preset-env": "^7.7.7",
+    "@babel/traverse": "^7.7.4",
+    "@babel/types": "^7.7.4",
     "autoprefixer": "^9.7.3",
     "babel-loader": "^8.0.6",
     "cache-loader": "^4.1.0",

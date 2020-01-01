@@ -5,7 +5,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 const ParallelUglifyPlugin = require('webpack-parallel-uglify-plugin')
-
+const firstPlugin = require('./plugins/webpack-firstPlugins')
 
 module.exports = WebpackMerge(webpackConfig, {
   mode: 'production',
@@ -14,7 +14,8 @@ module.exports = WebpackMerge(webpackConfig, {
     new CopyWebpackPlugin([{
       from: path.resolve(__dirname, '../public'),
       to: path.resolve(__dirname, '../dist')
-    }])
+    }]),
+    new firstPlugin()
   ],
   optimization: {
     minimizer: [

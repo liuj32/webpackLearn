@@ -159,10 +159,10 @@ module.exports = {
     jquery: 'jQuery'
   },
   plugins: [
-    new BundleAnalyzerPlugin({
-      analyzerHost: '127.0.0.1',
-      analyzerPort: 8889
-    }),
+    // new BundleAnalyzerPlugin({
+    //   analyzerHost: '127.0.0.1',
+    //   analyzerPort: 8889
+    // }),
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, '../public/index.html'),
@@ -183,7 +183,8 @@ module.exports = {
             ],
             cacheDirectory: true
           }
-        }
+        }, 
+        path.resolve(__dirname, './loaders/drop-console.js')
       ],
       threadPool: happyThreadPool
     }),

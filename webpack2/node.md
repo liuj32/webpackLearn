@@ -1,5 +1,5 @@
 # webpack配置记录
-
+[参考](https://juejin.im/post/5de87444518825124c50cd36)
 ## 需要安装的包
 1. webpack webpack-cli
 2. html-webpack-plugin
